@@ -1,0 +1,9 @@
+*.jpg
+*.png
+*~
+*#
+*.aux
+*.html
+*.log
+*.out
+*.toc

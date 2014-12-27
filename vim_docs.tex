@@ -1,0 +1,2531 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=blue,
+    filecolor=blue,
+    linkcolor=blue,
+    urlcolor=red
+}
+\usepackage{url}
+% verbatim small
+\makeatletter
+\g@addto@macro\@verbatim\footnotesize
+%\renewcommand{\l@section}{\@dottedtocline{1}{1.5em}{2.6em}}
+\renewcommand{\l@subsection}{\@dottedtocline{2}{1.5em}{3.0em}}
+%\renewcommand{\l@subsubsection}{\@dottedtocline{3}{7.4em}{4.5em}}
+\makeatother
+
+\author{@sopier\footnote{http://twitter.com/sopier}}
+\title{Tutorial Vim}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\pagebreak
+
+\section{Pendahuluan}
+\subsection{Tentang Tutorial Ini}
+Tulisan-tulisan ini sebenarnya bukanlah tutorial lengkap
+yang mengajarkan kepada Anda seluk-beluk program Vim,
+melainkan sekedar catatan pribadi penulis yang coba
+dituangkan kedalam sebuah berkas elektronik dengan tujuan
+untuk dokumentasi pribadi, syukur-syukur kalau ada pihak
+lain yang membacanya dan mampu mendapatkan manfaat dari
+tulisan-tulisan ini.
+
+\subsection{Tentang Vim}
+Vim adalah sebuah program penyunting teks yang dapat
+dikonfigurasi sesuai kebutuhan sehingga proses penyuntingan
+teks menjadi efisien. Vim merupakan versi vi yang
+terbarukan dan disebarluaskan pada hampir semua sistem
+UNIX.\footnote{http://www.vim.org}
+
+Vim sering dijuluki sebagai program 'penyunting bagi
+\emph{programmer}', dan memang kenyataannya sangat berguna
+untuk kebutuhan \emph{programming}, sehingga beberapa
+menyebutnya sebagai sebuah IDE (\emph{Integrated Development
+Environment}). Kenyataannya, Vim tidak hanya digunakan para
+\emph{programmer}. Vim sesuai digunakan untuk semua
+kebutuhan yang berkaitan dengan penyuntingan teks, dari
+menulis \emph{email} sampai penyuntingan berkas konfigurasi.
+
+Vim bukanlah program pemroses kata (\emph{word processor}),
+dan tidak memiliki fitur WYSIWYG, Vim adalah sebuah alat
+penyunting yang harus dipelajari cara penggunaannya.
+Pertanyaan selanjutnya adalah sesulit apa sih belajar Vim
+itu? Sejauh pengetahuan penulis mempelajari Vim itu tidak
+akan ada habisnya, karena tujuan utama kita adalah efisiensi.
+Sesuatu yang hari ini dirasa sudah efisien belum tentu esok
+masih tetap efisien. Ini juga berarti proses \emph{continous
+improvement} berjalan terus-menerus. Hal ini juga berkaitan
+dengan seberapa kreatif si pengguna dalam mengoptimalkan
+Vim.
+
+Vim adalah \emph{charityware}, dan memiliki lisensi
+\emph{GPL-compatible}, sehingga dapat didistribusikan secara
+bebas dan gratis, namun jika Anda merasa mendapatkan manfaat
+dari Vim, para pengembang Vim meminta Anda untuk membantu
+dengan melakukan donasi dengan membantu anak-anak di Uganda
+melalui ICCF.\footnote{http://iccf-holland.org/}
+
+Perlu dicatat bahwa penggunaan Vim akan optimal dalam
+kondisi \emph{mouseless} operation, artinya penggunaan
+perangkat \emph{mouse} hanya akan memperlambat kerja kita,
+untuk itu mari kita biasakan bekerja tanpa \emph{mouse}. Ini
+juga menjadi salah satu alasan kenapa banyak yang bilang
+belajar Vim itu sulit. Namun jangan khawatir, untuk bisa
+produktif dan efisien, Anda tidak perlu menguasai semua
+konsep Vim, cukup kuasai beberapa konsep dasar, setelah itu
+konsep lain dapat Anda pelajari sesuai kebutuhan.
+
+\section{Penyuntingan Dasar}
+
+Sebelum menjalankan Vim, tentunya Anda harus \emph{install}
+dulu programnya, jika Anda menggunakan sistem operasi
+Ubuntu, Anda dapat meng-\emph{install} menggunakan
+perintah:\footnote{Penulis menggunakan sistem operasi Ubuntu
+12.04 dan aplikasi xterm sebagai \emph{terminal emulator}}
+
+\begin{verbatim}
+$ sudo apt-get install vim
+\end{verbatim}
+
+Setelah Vim ter-\emph{install}, hal penting dan mendasar
+sebenarnya adalah membuat berkas \verb=.vimrc= pada
+direktori \verb=home= Anda. Berkas ini berguna untuk
+konfigurasi program Vim, namun berhubung materi tersebut
+masuk pada tingkatan menengah, mari kita jalankan saja dulu
+Vim dengan konfigurasi \emph{default}:
+
+\begin{verbatim}
+$ vim contoh.txt
+\end{verbatim}
+
+Anda sebenarnya juga dapat meng-\emph{install} \verb=gVim=,
+versi \emph{graphical} dari Vim dengan fitur \emph{menu}
+pada bagian atas \emph{window} sehingga dapat diakses dengan
+perangkat \emph{mouse}.  Namun sekali lagi, tutorial ini
+mengasumsikan kita tidak menggunakan bantuan perangkat
+\emph{mouse} sama sekali, sehingga aplikasi Vim pun sudah
+cukup.
+
+Setelah menjalankan perintah di atas, Anda akan mendapatkan
+tampilan kurang lebih sebagai berikut:
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim1.jpg}
+
+\vspace{12pt}
+
+Mulai dari sini Anda mungkin mulai bingung, bagaimana cara
+kita mengetik? Perlu diketahui bahwa Vim mengenal 3
+\emph{mode} yang harus kita mengerti dulu, yakni
+\emph{Insert Mode}, \emph{Normal Mode} dan 
+\emph{Insert Mode}. Secara \emph{default}, Vim berada pada
+\emph{Command Mode}, dan Anda diharapkan selalu kembali ke
+\emph{mode} ini setiap Anda selesai melakukan penyuntingan
+teks. 
+
+Mari kita pahami dulu arti dari masing-masing \emph{mode}
+tersebut:
+
+\begin{itemize}
+    \item \emph{Normal Mode} adalah \emph{mode} di mana Anda
+        dapat menjalankan perintah (\emph{command}). 
+        \emph{Mode} ini merupakan \emph{mode} ketika Anda
+        menjalankan Vim pertama kali.
+    \item \emph{Insert Mode} adalah \emph{mode} di mana Anda
+        memasukkan teks.
+    \item \emph{Visual Mode} adalah \emph{mode} di mana Anda
+        dapat menyorot secara \emph{visual} sekumpulan teks,
+        sehingga Andapat melakukan operasi penyuntingan pada
+        teks tersebut.
+\end{itemize}
+
+Untuk memulai proses pengetikan, tekan tombol \verb=i=, dan
+kalau Anda perhatikan bagian bawah layar Vim Anda akan
+berubah menjadi \verb=-- INSERT --=
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim2.jpg}
+
+\vspace{12pt}
+
+Sekarang Anda dapat mulai mengetik, misal \verb=Hello World!=
+
+Setiap selesai mengetik, Anda disarankan untuk kembali ke
+\emph{command mode}, hal ini dapat dilakukan dengan menekan
+tombol \verb=Esc=\footnote{Selain Esc, Anda dapat juga
+    menggunakan kombinasi Ctrl+c atau Ctrl+[ atau Anda dapat
+    mengkonfigurasi pilihan tombol sesuai selera Anda dengan
+membuat konfigurasi berkas .vimrc yang akan dibahas pada
+bagian lebih lanjut}. Perhatikan sekarang tanda 
+\verb=-- INSERT MODE --= sekali lagi menghilang, dan ini
+berarti Anda berada pada \emph{command mode}. 
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim3.jpg}
+
+\vspace{12pt}
+
+Sekarang simpan berkas ini dengan mengetik \verb=:w=, yang
+apabila berhasil, tanda \verb=[+]= di sebelah kanan nama
+berkas menghilang.
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim4.jpg}
+
+\vspace{12pt}
+
+Masih dalam \emph{command mode}, sekarang tekan \verb=:q=
+untuk keluar (\emph{exit}) dari Vim.
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim5.jpg}
+
+\vspace{12pt}
+
+Mari kita rangkum, perintah-perintah yang sudah Anda lakukan
+di atas:
+
+\begin{verbatim}
+i   =>   beralih ke insert mode
+Esc =>   beralih ke command mode
+:w  =>   menyimpan berkas
+:q  =>   keluar dari Vim
+\end{verbatim}
+
+Selamat! Anda baru saja membuat berkas \verb=contoh.txt= dan
+mengisikan kalimat \verb=Hello World!= ke dalam berkas
+tersebut! Memang, pada awalnya terasa rumit, namun ketika
+Anda sudah terbiasa dan mulai menguasai beberapa kombinasi
+tombol perintah lebih lanjut, lambat laun Anda akan merasakan apa
+yang dimaksud dengan ``\emph{The power of Vim}``.
+
+\section{Navigasi}
+Seperti disebutkan di atas bahwa penggunaan Vim yang efisien
+adalah dengan meniadakan penggunaan perangkat \emph{mouse}
+dan mengoptimalkan penggunaan perangkat \emph{keyboard}. Hal
+ini juga berarti bahwa Anda diharapkan mengetahui bagaimana
+mengetik dengan \emph{keyboard} secara efisien. 
+
+Salah satu teori yang sering dipakai adalah \emph{Home Row
+Technique}, yakni menempatkan keempat jari kiri pada tombol
+A, S, D, F dan keempat jari kanan pada tombol J, K, L, ;.
+Dengan teknik ini, Anda dapat menjangkau tombol lain, baik
+yang berada di atas maupun di bawah tombol-tombol di atas
+secara lebih baik.
+
+Hebatnya Vim juga menggunakan teori tersebut secara
+intensif, daripada menggunakan tombol panah yang biasanya
+terletak pada sebelah kanan \emph{keyboard} dan sulit
+dijangkau, Vim menggunakan tombol H, J, K, L untuk navigasi
+ke kiri, ke bawah, ke atas, dan ke kanan. 
+
+\begin{verbatim}
+h   =>   Bergerak ke kiri satu karakter
+j   =>   Bergerak ke bawah satu baris
+k   =>   Bergerak ke atas satu baris
+l   =>   Bergerak ke kanan satu karakter
+\end{verbatim}
+
+Memang pada awalnya perlu waktu untuk penyesuaian, namun
+ketika sudah mahir, lihatlah bagaimana kecepatan mengetik
+Anda dapat meningkat secara signifikan karena Anda tidak
+perlu `menggeser` tangan kanan Anda untuk mengjangkau tombol
+panah.
+
+Anda dapat mengkombinasikan tombol navigasi di atas dengan
+angka untuk melakukan navigasi secara lebih cepat, misal:
+
+\begin{verbatim}
+10h =>   ke kiri 10 karakter
+15j =>   ke bawah 15 baris
+5k  =>   ke atas 5 baris
+4l  =>   ke kanan 4 karakter
+\end{verbatim}
+
+dan beberapa kombinasi tombol lainnya:
+
+\begin{verbatim}
+Ctrl+F  =>   menuju ke bawah satu layar
+Ctrl+B  =>   menuju ke atas satu layar
+Ctrl+D  =>   menuju ke bawah setengah layar
+Ctrl+U  =>   menuju ke atas setengah layar
+M       =>   menuju ke bagian tengah dari layar
+H       =>   menuju ke bagian paling atas dari layar
+L       =>   menuju ke bagian paling bawah dari layar
+\end{verbatim}
+
+Bila sudah mahir, Anda dapat mencoba melakukan navigasi
+berdasar kata (\emph{word}), misal:
+
+\begin{verbatim}
+w   =>   menuju ke kata berikutnya
+W   =>   menuju ke kata berikutnya (berdasar spasi)
+b   =>   menuju ke kata sebelumnya
+b   =>   menuju ke kata sebelumnya (berdasar spasi)
+e   =>   menuju ke akhir kata
+E   =>   menuju ke akhir kata (berdasar spasi)
+ge  =>   menuju ke akhir kata sebelumnya
+gE  =>   menuju ke akhir kata sebelumnya (berdasar spasi)
+8w  =>   menuju ke kata kedelapan dari posisi kursor sekarang
+5b  =>   menuju ke kiri 5 kata dari posisi kata sekarang
+3e  =>   menuju ke akhir karakter dari kata ketiga
+\end{verbatim}
+
+Pertanyaannya apa beda \verb=w= dengan \verb=W= (atau
+\verb=b= dengan \verb=B=)?
+
+Navigasi dengan \verb=w= masih memperhitungkan tanda
+\emph{punctuation} seperti \verb=,.:/!= dll, sedangkan
+\verb=W= hanya memperhitungkan spasi. Ambil contoh kalimat
+berikut:
+
+\begin{verbatim}
+http://www.infotiket.com menyediakan layanan info tiket
+pesawat, konser, kereta api dan hotel
+\end{verbatim}
+
+Ketik perintah berikut:
+
+\begin{verbatim}
+^   =>   berpindah ke awal baris
+w   =>   berpindah ke :
+W   =>   kursor bergerak ke huruf m pada kata 'menyediakan'
+\end{verbatim}
+
+Anda dapat juga melakukan navigasi menggunakan tombol
+\verb=f= untuk pencarian ke kanan dan \verb=F= untuk
+pencarian ke kiri. Sebagai contoh kalimat berikut:
+
+\begin{verbatim}
+Saya sedang belajar Vim
+\end{verbatim}
+
+Kursor Anda sekarang berada pada awal kalimat, dan Anda
+ingin menuju ke kata Vim, Anda dapat melakukannya dengan
+kombinasi tombol \verb=4w= atau Anda dapat juga dengan
+menggunakan perintah:
+
+\begin{verbatim}
+fV
+\end{verbatim}
+
+Tombol di atas berarti cari ke arah kanan karakter \verb=V=.
+Sekarang kursor Anda dengan cepat berpindah ke huruf \verb=V=.
+Perlu diingat tombol pencarian ini bersifat \emph{case
+sensitif}, sehingga pada contoh di atas karena yang kita
+cari adalah huruf \verb=V= kapital, maka kita harus menekan tombol
+pada \verb=keyboard= \verb=f= diikuti dengan \verb=Shift+v=.
+
+Untuk pencarian ke kiri, gunakan huruf \verb=F= (f kapital),
+diikuti dengan huruf yang ingin Anda cari. Anda dapat
+mengulangi pencarian berikutnya dengan menekan tombol
+\verb=;=. Misal pada kalimat berikut:
+
+\begin{verbatim}
+Tutorial Belajar Vim Versi 0.0.8 (Vladimir)
+\end{verbatim}
+
+Untuk menuju ke kata \verb=Vladimir=, gunakan kombinasi tombol
+berikut:
+
+\begin{verbatim}
+fV;;
+\end{verbatim}
+
+dan kursor Anda pun dengan cepat berpindah ke huruf \verb=V= pada
+kata \verb=Vladimir=. Jika Anda ingin kembali ke huruf \verb=V=
+sebelumnya, tekan tombol koma (\verb=,=).
+
+\begin{verbatim}
+^fV;;,,
+\end{verbatim}
+
+Perintah di atas mencari huruf \verb=V= pada kata \verb=Vladimir=,
+kemudian kembali ke huruf \verb=V= pada kata \verb=Vim=.
+
+Perlu diingat bahwa tombol \verb=f= ini hanya dapat
+digunakan untuk mencari karakter pada satu baris saja, dan
+sifatnya lebih kepada navigasi daripada fungsi pencarian.
+Untuk fungsi pencarian kata pada dokumen, akan dibahas pada
+bagian lain.
+
+Selain fitur \verb=f=, Vim juga memiliki fitur tombol
+\verb=t= yang berfungsi seperti \verb=f=, bedanya \verb=t=
+akan bergerak ke 1 karakter sebelum karakter yang dicari.
+Untuk lebih jelasnya perhatikan contoh berikut:
+
+Anda memiliki kalimat:
+
+\begin{verbatim}
+Vim merupakan program penyunting teks yang hebat.
+\end{verbatim}
+
+Anda ingin mencari 1 karakter sebelum huruf \verb=a= pada
+kata \verb=hebat= (yakni huruf \verb=b=). Berikut kombinasi
+tombol yang dapat Anda lakukan.
+
+\begin{verbatim}
+^
+ta;;;;
+\end{verbatim}
+
+Selanjutnya navigasi untuk menuju ke awal atau akhir baris,
+dapat digunakan tombol:
+
+\begin{verbatim}
+0   =>   menuju ke awal baris
+^   =>   menuju ke karakter pertama dalam sebuah baris
+$   =>   menuju ke akhir baris
+\end{verbatim}
+
+Menuju ke baris tertentu secara cepat dapat menggunakan
+perintah:\footnote{Navigasi menggunakan nomor baris lebih
+    saya sukai daripada harus menekan tombol M, H, L
+    karena lebih akurat dan praktis, tapi itu semua
+tergantung selera Anda..}
+
+\begin{verbatim}
+:n      =>   menuju ke baris ke-n
+:100    =>   menuju ke baris ke-100
+\end{verbatim}
+
+Anda juga dapat melakukan perintah di atas dengan:
+
+\begin{verbatim}
+10G     =>   menuju ke baris 10
+100G    =>   menuju ke baris 100
+\end{verbatim}
+
+Menuju ke awal dokumen atau akhir dokumen:
+
+\begin{verbatim}
+gg  =>   menuju ke awal dokumen (baris pertama)
+G   =>   menuju ke akhir dokumen (baris terakhir)
+\end{verbatim}
+
+Selain kombinasi tombol di atas, kita juga dapat
+menggerakkan layar tanpa merubah posisi kursor, sehingga
+posisi kursor tepat berada di tengah layar, dengan menekan
+tombol:
+
+\begin{verbatim}
+zz  =>   reposisi layar sehingga kursor tepat di tengah layar
+\end{verbatim}
+
+\section{Fungsi Penyuntingan}
+
+\subsection{Menyisipkan Teks}
+Berikut beberapa kombinasi tombol perintah untuk melakukan
+penyuntingan teks secara cepat pada Vim:
+
+\begin{verbatim}
+i   =>   merubah ke insert mode pada posisi kursor
+I   =>   menuju ke kursor kosong pada awal baris dan merubah ke insert mode
+a   =>   bergerak ke kanan 1 karakter dan merubah ke insert mode
+A   =>   menuju ke kursor kosong pada akhir baris dan merubah ke insert mode
+o   =>   membuat baris baru di bawah posisi kursor sekarang dan merubah ke insert mode
+O   =>   membuat baris baru di atas posisi kursor sekarang
+dan merubah ke insert mode
+s   =>   hapus huruf pada posisi kursor dan beralih ke insert mode
+S   =>   hapus baris pada posisi kursor dan beralih ke insert mode
+\end{verbatim}
+
+Selain kombinasi tombol di atas, Anda juga dapat menggunakan
+kombinasi perintah \verb=ct= diikuti dengan karakter 'sampai
+dengan' yang Anda tuju, untuk lebih jelasnya perhatikan
+contoh berikut:
+
+Semisal Anda memiliki kata \verb=getUrl= yang ingin Anda
+menjadi \verb=findUrl=, maka Anda dapat menggunakan perintah
+berikut (pastikan posisi kursor berada pada huruf \verb=g=
+pada kata \verb=getUrl=):
+
+\begin{verbatim}
+ctU     =>   change til U
+find    =>   ubah menjadi find
+Esc     =>   beralih ke normal mode kembali 
+\end{verbatim}
+
+\subsection{Salin dan Tempel}
+
+Kedua fungsi ini saya yakin banyak dipakai ketika kita
+sedang bekerja dengan teks, dan Anda mungkin terbiasa
+menggunakan perangkat \emph{mouse} untuk melakukan kedua
+fungsi tersebut.
+
+Sekali lagi, \emph{mouse is your enemy!}, jadi mari kita
+lakukan fungsi tersebut dengan \emph{keyboard way}.  Anda
+dapat menyalin sebuah baris dengan mudahnya menggunakan
+perintah \verb=yy= atau \verb=Y=, kemudian menuju ke baris
+yang Anda inginkan, kemudian tekan \verb=p= untuk
+mentempelkan pada baris di bawah kursor, atau tekan \verb=P=
+untuk menempelkan pada baris di atas kursor.
+
+Anda dapat juga menempelkan baris tersebut sebanyak yang
+Anda inginkan, misal Anda ingin mentempelkan sebanyak 5 kali
+pada posisi di bawah kursor Anda sekarang, maka tekan tombol
+\verb=5p=, maka otomatis baris yang Anda menyalin akan
+tersalin sebanyak 5 kali. 
+
+Contoh:
+
+\begin{verbatim}
+Vim is so powerful
+\end{verbatim}
+
+Anda ingin menyalin kalimat di atas sebanyak 9 kali, maka
+perintah di Vim adalah:
+
+\begin{verbatim}
+Y
+9p
+\end{verbatim}
+
+Hasil:
+
+\begin{verbatim}
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+Vim is so powerful
+\end{verbatim}
+
+Atau Anda ingin menyalin kata \verb=so powerful= saja?
+
+Tempatkan kursor pada huruf \verb=s= pada kata \verb=so=,
+kemudian ketik perintah berikut:
+
+\begin{verbatim}
+^       =>  ke awal baris
+fs;     =>  cari s yang kedua
+y2w     =>  salin 2 kata
+o       =>  buat baris baru
+Esc     =>  beralih ke normal (command) mode
+p       =>  put (paste) in here
+\end{verbatim}
+
+Hasilnya:
+
+\begin{verbatim}
+so powerful
+\end{verbatim}
+
+Bagaimana? Sudah mulai merasakan \emph{the power of Vim}??
+
+Mari kita rangkum perintah yang ada dalam bagian ini:
+
+\begin{verbatim}
+Y   =>  salin baris
+yy  =>  salin baris
+yw  =>  salin satu kata di sebelah kanan kursor
+yb  =>  salin satu kata di sebelah kiri kursor
+y2w =>  salin dua kata di sebelah kanan kursor
+p   =>  put hasil salinan
+\end{verbatim}
+
+\subsection{Sorot / Visual Mode}
+
+Anda mungkin terbiasa melakukan fungsi sorot ini menggunakan
+perangkat \emph{mouse}, dengan melakukan klik kiri, kemudian
+\emph{drag} sampai daerah yang Anda inginkan. Vim juga
+memungkinkan melakukan itu, meski tentunya proses sorot
+menggunakan \emph{keyboard}. 
+
+Vim memiliki 3 bentuk \emph{visual} yang berbeda:
+
+\begin{enumerate}
+    \item \emph{per-character visual mode} (v)
+    \item \emph{line visual mode} (V)
+    \item \emph{block visual mode} (Ctrl+v)
+\end{enumerate}
+
+Contoh \emph{per-character visual mode}
+
+Anda memiliki kalimat berikut:
+
+\begin{verbatim}
+Vim is great!
+\end{verbatim}
+
+Anda dapat menyorot dan mengganti kata \verb=great= menjadi
+\verb=superb= dengan melakukan perintah berikut:
+
+\begin{verbatim}
+^       =>  menuju ke awal baris
+2w      =>  menuju ke kata ke 3
+v       =>  aktifkan fungsi sorot
+e       =>  menuju ke akhir huruf pada kata
+c       =>  menuju ke change mode
+superb  =>  ganti ke superb
+\end{verbatim}
+
+
+Contoh \emph{line visual mode}:
+
+Asumsikan kita mempunyai baris teks sebagai berikut:
+
+\begin{verbatim}
+1 import os
+2 from bottle import route, run
+3
+4 @route('/')
+5 def homepage():
+6   return 'Hello World!'
+7
+8 run(host='localhost', port=8080)
+\end{verbatim}
+
+Katakanlah Anda ingin menyorot baris 4 sampai 6, dengan Vim
+Anda dapat melakukannya dengan
+
+\begin{verbatim}
+:4      => menuju ke baris ke 4
+V       => sorot baris tersebut
+2j      => sorot 2 baris dibawahnya
+\end{verbatim}
+
+Jika Anda perhatikan ada perubahan warna pada daerah yang
+sedang Anda sorot, selanjutnya terserah Anda, apakah ingin
+disalin (menggunakan tombol \verb=y=) atau dihapus (potong)
+(menggunakan tombol \verb=d=).
+
+Contoh \emph{block visual mode}:
+
+Dengan \emph{visual block mode}, Anda dapat melakukan
+berbagai langkah manipulasi teks dengan lebih cepat.
+Perhatikan contoh berikut (dikombinasikan dengan perintah
+\verb=I= (\emph{insert}):
+
+\begin{verbatim}
+Ini contoh1.txt
+Ini contoh2.txt
+Ini contoh3.txt
+Ini contoh4.txt
+Ini contoh5.txt
+\end{verbatim}
+
+Anda ingin menambahkan kata berkas pada setiap baris:
+
+\begin{verbatim}
+^       =>  menuju ke awal baris
+w       =>  bergerak satu word
+Ctrl+v  => mengaktifkan blok sorot
+4j      =>  ke bawah 4 baris
+I       =>  berubah ke mode insert
+berkas  =>  ketik kata berkas
+space   =>  memberi jarak 1 spasi dengan kata berikutnya
+Esc     =>  kembali ke command mode
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Ini berkas contoh1.txt
+Ini berkas contoh2.txt
+Ini berkas contoh3.txt
+Ini berkas contoh4.txt
+Ini berkas contoh5.txt
+\end{verbatim}
+
+\emph{Amazing} ....
+
+Contoh lain
+
+Misal Anda memiliki baris kalimat seperti berikut:
+
+\begin{verbatim}
+Ini baris yang panjang
+Pendek
+Ini baris yang panjang
+\end{verbatim}
+
+Anda ingin menambahkan kata \verb=sangat= antara kata
+\verb=yang= dengan kata \verb=panjang=.
+
+\begin{verbatim}
+^       =>  menuju ke awal baris
+3w      =>  menuju ke kata ke-3
+Ctrl+v  =>  aktifkan sorot blok
+2j      =>  menuju 2 baris kebawah
+I       =>  berubah ke insert mode
+sangat  =>  ketik sangat
+space   =>  memberi spasi antara kata
+Esc     =>  kembali ke command mode
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Ini baris yang sangat panjang
+Pendek
+Ini baris yang sangat panjang
+\end{verbatim}
+
+Kita dapat lihat, dengan perintah \verb=I=, baris kedua
+tidak berubah, karena memiliki panjang baris yang tidak
+sama.
+
+Contoh berikutnya dikombinasikan dengan perintah \verb=c=
+(\emph{change}):
+
+\begin{verbatim}
+Ini baris yang sangat panjang
+Pendek
+Ini baris yang sangat panjang
+\end{verbatim}
+
+Mari kita ubah kata \verb=sangat= menjadi \verb=--SANGAT--=
+
+\begin{verbatim}
+^           =>  menuju ke awal baris
+3w          =>  menuju ke kata ke-3
+Ctrl+v      =>  aktifkan blok sorot
+2j          =>  menuju ke 2 baris dibawahnya
+e           =>  menuju ke akhir kata sangat
+c           =>  change
+--SANGAT--  =>  ketik kata pengganti
+Esc         =>  kembali ke command mode
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Ini baris yang --SANGAT-- panjang
+Pendek
+Ini baris yang --SANGAT-- panjang
+\end{verbatim}
+
+Contoh berikutnya merupakan kombinasi antara \emph{visual
+block} dengan perintah \verb=A= (\emph{append}):
+
+\begin{verbatim}
+Ini baris yang panjang
+Pendek
+Ini baris yang panjang
+\end{verbatim}
+
+Anda ingin menambahkan kata \verb=sangat= di antara kata
+\verb=yang= dengan kata \verb=panjang=.
+
+\begin{verbatim}
+^           =>  menuju ke awal baris
+3w          =>  menuju ke 3 kata ke kanan
+h           =>  ke kiri 1 karakter
+Ctrl+v      =>  aktifkan blok sorot
+2j          =>  menuju 2 baris dibawahnya
+A           =>  append mode
+sangat      =>  ketik sangat
+space       =>  beri jarak antar kata
+Esc         =>  kembali ke command mode
+\end{verbatim}
+
+Dan hasilnya, kata \verb=sangat= ditambahkan pada setiap
+baris! Ini adalah perbedaan perintah \verb=A= dengan
+perintah lainnya pada mode blok sorot.
+
+\begin{verbatim}
+Ini baris yang sangat panjang
+Pendek         sangat 
+Ini baris yang sangat panjang
+\end{verbatim}
+
+Contoh berikut ini mengkombinasikan blok sorot dengan
+perintah \verb=$= dan \verb=A= untuk menambahkan kata di
+setiap baris yang ada.
+
+\begin{verbatim}
+Ini baris yang panjang
+Pendek
+Ini baris yang panjang
+\end{verbatim}
+
+Tambahkan kata \verb=sekali= di setiap baris
+
+\begin{verbatim}
+$       =>  menuju ke akhir baris
+Ctrl+v  =>  aktifkan blok sorot
+2j      =>  sorot 2 baris ke bawah
+A       =>  append mode
+Space   =>  beri jarak antar kata
+sekali  =>  ketik sekali
+Esc     =>  kembali ke command mode
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Ini baris yang panjang sekali
+Pendek sekali
+Ini baris yang panjang sekali
+\end{verbatim}
+
+Contoh berikutnya merupakan kombinasi antara blok sorot
+dengan perintah \verb=r= (\emph{replace}).
+
+\begin{verbatim}
+Ini baris yang panjang
+Pendek
+Ini baris yang panjang
+\end{verbatim}
+
+Mari kita ubah kata \verb=panjang= menjadi kata
+\verb=xxxxxx=
+
+\begin{verbatim}
+^           =>  menuju ke awal baris
+3w          =>  ke kanan 3 kata
+Ctrl+v      =>  aktifkan blok sorot
+2j          =>  sorot 2 baris ke bawah
+e           =>  ke akhir kata
+r           =>  replace mode
+x           =>  ganti ke huruf x
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Ini baris yang xxxxxxx
+Pendek
+Ini baris yang xxxxxxx
+\end{verbatim}
+
+Contoh berikutnya menggeser bagian dari baris agar sejajar
+dengan baris di bawah (atas) nya.
+
+\begin{verbatim}
+Nama    :   Sopier
+Alamat  :   Jogja
+Pekerjaan   :   Wiraswasta
+Pendidikan  :   Sarjana
+\end{verbatim}
+
+Anda ingin menggeser 2 baris paling atas, supaya tanda
+\verb=:= sejajar dengan baris dibawahnya:
+
+\begin{verbatim}
+^       =>  menuju ke awal baris
+f:      =>  menuju ke tanda :
+Ctrl+v  =>  aktifkan blok sorot
+j       =>  sorot 1 baris dibawahnya
+>       =>  geser satu tab ke kanan
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Nama        :   Sopier
+Alamat      :   Jogja
+Pekerjaan   :   Wiraswasta
+Pendidikan  :   Sarjana
+\end{verbatim}
+
+Anda juga dapat menggeser ke kiri dengan mengganti tanda
+\verb=>= menjadi \verb=<=.
+
+Tips:
+
+Anda dapat melakukan sorot ulang teks yang sudah Anda sorot
+sebelumnya dengan menggunakan perintah \verb=gv=.
+
+\subsection{Fungsi Hapus / Potong}
+
+Vim memiliki fungsi hapus yang sangat handal dan efisien,
+perhatikan kombinasi tombol berikut:
+
+\begin{verbatim}
+x   =>   menghapus 1 karakter pada posisi kursor
+X   =>   menghapus 1 karakter di depan posisi kursor
+d   =>   menghapus daerah yang sedang disorot
+dd  =>   menghapus satu baris
+dw  =>   menghapus satu kata ke depan
+db  =>   menghapus satu kata ke belakang
+D   =>   menghapus dari posisi kursor sampai ke akhir baris
+\end{verbatim}
+
+\subsection{Undo dan Redo}
+Berikut ini tombol perintah untuk melakukan \emph{undo} dan
+\emph{redo} pada Vim:
+
+\begin{verbatim}
+u       =>   Undo
+U       =>   Undo semua perubahan pada baris
+Ctrl+R  =>   Redo
+:e!     =>   Membatalkan semua perubahan pada berkas
+\end{verbatim}
+
+\subsection{Word Completion}
+Sebagian orang mungkin menyebutnya \emph{auto completion},
+apa pun itu, cara kerjanya adalah dengan mengetikkan
+beberapa karakter kemudian Vim akan mencari dalam dokumen,
+kata yang cocok dengan sekumpulan karakter tersebut.
+
+Berikut contohnya:
+
+\begin{verbatim}
+Yang menjadikan momok bagi sebagian orang mungkin adalah
+kenyataan bahwa di Vim kita dituntut untuk sesedikit 
+mungkin menggunakan mouse.
+\end{verbatim}
+
+Semisal Anda ingin mengetik ulang kata \verb=mouse=,
+daripada harus mengetik secara utuh Anda cukup mengetik
+\verb=mo= diikuti dengan tombol \verb=Ctrl+p=, nanti Vim
+akan menunjukkan kata apa saja yang diawali dengan
+\verb=mo=.
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim7.jpg}
+
+Anda dapat juga menggunakan kombinasi tombol \verb=Ctrl+n=
+untuk pencarian ke bawah (\emph{bottom}).
+
+\begin{verbatim}
+Ctrl+p      =>  pencarian ke atas (up)
+Ctrl+n      =>  pencarian ke bawah (bottom)
+\end{verbatim}
+
+\subsection{Filename Completion}
+Sebagai seorang \emph{developer}, Anda mungkin pernah
+dihadapkan pada sebuah kode di mana Anda harus menulis
+\emph{filepath} ke dalam kode tersebut. Vim memberikan
+kemudahan untuk itu, tanpa kita harus mengingat-ingat di
+mana berkas tersebut berada.
+
+Perhatikan contoh kode berikut:
+
+\begin{verbatim}
+<html>
+<head>
+    <link rel="stylesheet" href="somefilepath.css"/>
+</head>
+<body>
+</body>
+</html>
+\end{verbatim}
+
+Dengan Vim, Anda dapat menyunting \verb=somefilepath.css=
+dengan cara berikut:
+
+Pastikan Anda berada pada baris yang akan disunting
+
+\begin{verbatim}
+^
+f";;
+ci"
+[opsional] Ketik direktori di mana Anda mau mencari (misal /home/)
+Ctrl+x Ctrl+f
+Tekan Ctrl+f atau Ctrl+n untuk bergerak maju (forward)
+Tekan Ctrl+p untuk bergerak mundur (backward)
+Jika sudah, tekan Ctrl+x lagi
+\end{verbatim}
+
+Berikut ini tampilan ketika kita sedang menggunakan fitur
+\emph{filename completion} dalam Vim.
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim11.png}
+
+\vspace{12pt}
+
+\subsection{Replace Karakter}
+Biasanya, ketika kita ingin mengganti sebuah karakter, kita
+menghapus karakter lama, masuk ke \emph{insert mode},
+kemudian memasukkan karakter yang baru. Kita dapat
+mempersingkat langkah tersebut dengan menggunakan tombol
+\verb=r= diikuti dengan karakter pengganti.
+
+Contoh pada kata \verb=Vim=, kita ingin mengganti \verb=V=
+kapital menjadi \verb=v= kecil, caranya tempatkan kursor
+pada \verb=V=, tekan \verb=r=, kemudian \verb=v=, dan
+karakter pun berubah.
+
+Anda dapat juga menggunakan tombol \verb=R= untuk mengganti
+beberapa huruf sekaligus, perhatikan contoh berikut:
+
+\begin{verbatim}
+Mr. Joni sedang belajar Vim
+\end{verbatim}
+
+Ganti \verb=xxxx= menjadi Joni dengan mengetikkan perintah
+berikut:
+
+\begin{verbatim}
+^       =>   menuju ke awal baris
+W       =>   menuju ke huruf x pertama
+R       =>   beralih ke replace mode
+Joni    =>   ketik Joni untuk mengganti xxxx
+\end{verbatim}
+
+\emph{Another little improvement on speed typing :)}
+
+\subsection{Menyunting Kata dalam tanda ' " (}
+Anda mungkin pernah berhadapan dengan teks seperti berikut
+ini:
+
+\begin{verbatim}
+<title>Judul</title>
+\end{verbatim}
+
+Anda ingin mengganti kata \verb=Judul=?
+
+\begin{verbatim}
+dit     =>  menghapus kata di dalam html tags
+i       =>  beralih ke insert mode
+\end{verbatim}
+
+Atau Anda memiliki kalimat berbentuk kurang lebih seperti
+berikut?
+
+\begin{verbatim}
+<a href="http://www.infotiket.com">Info Tiket</a>
+\end{verbatim}
+
+Anda ingin menyunting kata yang berada dalam tanda \verb="=?
+Tempatkan kursor pada baris tersebut dan lakukan langkah
+berikut:
+
+\begin{verbatim}
+di"     =>  hapus kata di dalam tanda "
+ci"     =>  hapus kata di dalam tanda " dan beralih ke insert mode
+\end{verbatim}
+
+Untuk penyuntingan kalimat / kata di dalam tanda lainnya,
+cukup ganti tanda \verb="= dengan tanda yang Anda inginkan,
+misal (\verb=di(=, \verb=di[=, \verb=di{=, dst).
+
+Selain menggunakan \verb=dit=, ada juga perintah:
+
+\begin{verbatim}
+cit     =>  change inside tags
+yit     =>  copy inside tags
+vitp    =>  visual inside tags then put
+\end{verbatim}
+
+Silakan coba, Anda pasti menyukainya...
+
+\section{Fungsi Pencarian}
+
+Saya yakin fungsi ini banyak dipakai ketika kita sedang
+menyunting berkas. Bagaimana menggunakan fitur pencarian ini
+pada Vim?
+
+\subsection{Pencarian Case Insensitive}
+
+Vim pada dasarnya dapat melakukan pencarian pada satu
+berkas, banyak berkas atau pada daerah tertentu yang kita
+inginkan.
+
+Perintah dasarnya adalah menggunakan tombol \verb=/= diikuti
+dengan kata yang ingin kita cari, kemudian secara otomatis
+Vim akan mencari dan meng-\emph{highlight} kata tersebut
+(jika ada).
+
+Contoh:
+
+\begin{verbatim}
+/Vim    =>  mencari kata Vim forward
+Enter   =>  enter
+n       =>  next match
+N       =>  previous match
+\end{verbatim}
+
+Anda juga dapat menggunakan tombol \verb=?= untuk pencarian
+kebelakang (\emph{backward}), berikut contohnya:
+
+\begin{verbatim}
+?Vim    =>  mencari kata Vim backward
+Enter   =>  enter
+n       =>  previous match
+N       =>  next match
+\end{verbatim}
+
+Anda juga dapat melakukan pencarian menggunakan tombol
+\verb=*=, caranya tempatkan kursor Anda pada kata yang ingin
+Anda cari (misal \verb=Vim=), kemudian tekan tombol
+\verb=*=, maka secara otomatis Vim akan melakukan pencarian
+kata yang cocok dengan kata pada posisi kursor.
+
+Tombol \verb=#= memiliki fungsi yang sama dengan \verb=*=,
+hanya saja modus pencarian untuk \verb=#= adalah ke belakang
+(\emph{backward}). Anda juga dapat menggunakan \verb=g*=
+atau \verb=g#= untuk mencari kata yang \emph{non-exact}.
+
+Sebagai contoh:
+
+\begin{verbatim}
+kata
+katak
+\end{verbatim}
+
+Anda ingin mencari semua kata yang mengandung kata
+\verb=kata= di dalamnya? Lakukan perintah berikut:
+
+Letakkan kursor pada kata \verb=kata=, kemudian:
+
+\begin{verbatim}
+g*
+\end{verbatim}
+
+Maka semua kata yang mengandung kata \verb=kata= akan di
+\emph{highlight} oleh Vim.
+
+\subsection{Pencarian Case Sensitive}
+
+Secara \emph{default}, Vim menggunakan modus pencarian
+dengan pengaturan \emph{case insensitive}, ini artinya kata
+\verb=Vim= dengan \verb=vim= dipandang sebagai satu kata
+yang sama. Pertanyaan selanjutnya bagaimana cara kita
+mencari dengan modus \emph{case sensitive} dengan Vim?
+
+Terlebih dahulu, Anda dapat mengaktifkan modus
+\verb=smartcase= pada Vim dengan mengetikkan perintah
+berikut:\footnote{Saya juga menambahkan baris tersebut pada
+berkas .vimrc pada direktori home}
+
+\begin{verbatim}
+:set smartcase
+\end{verbatim}
+
+Kemudian lakukan perintah berikut:
+
+\begin{verbatim}
+/vim\C
+atau
+/\Cvim
+\end{verbatim}
+
+Perintah di atas berarti mencari kata \verb=vim=, bukannya
+\verb=Vim=.
+
+\subsection{Fungsi Cari dan Ganti}
+Apabila Anda ingin melakukan fungsi cari dan ganti pada
+satu berkas utuh, Anda dapat menjalankan perintah berikut:
+
+\begin{verbatim}
+:%s/kata_asal/kata_ganti/g
+\end{verbatim}
+
+Atau jika Anda ingin membatasi pencarian hanya pada baris
+tertentu:
+
+\begin{verbatim}
+:420, 421s/Anda/Kami/g
+\end{verbatim}
+
+Perhatikan tanda spasi di belakang koma.
+
+Atau Anda hanya ingin cari dan ganti pada satu baris saja?
+
+\begin{verbatim}
+:s/Anda/Kami/g
+\end{verbatim}
+
+Atau mungkin Anda lebih suka sistem sorot daerah tertentu
+kemudian baru melakukan cari dan ganti pada daerah yang Anda
+sorot? 
+
+\begin{verbatim}
+V
+5j
+:s/Anda/Kami/g
+\end{verbatim}
+
+Perintah di atas berarti, sorot baris pada posisi kursor
+sampai 5 baris di bawah posisi kursor, kemudian cari kata
+\verb=Anda= dan ganti dengan kata \verb=Kami=.
+
+Tanda \verb=%= berarti melakukan pencarian pada seluruh
+baris di dokumen, jika Anda ingin melakukan fungsi cari dan
+ganti pada satu baris saja, maka hilangkan tanda \verb=%=.
+
+Tanda \verb=g= berarti melakukan fungsi ini pada semua
+keterulangan (\emph{occurences}) pada baris. Jika tidak
+menggunakan tanda \verb=g=, maka Vim hanya akan mengganti
+kata pertama yang ditemukan pada baris.
+
+Contoh:
+
+\begin{verbatim}
+aku dan kau bagaikan langit dan bumi
+\end{verbatim}
+
+Kemudian ketikkan perintah berikut
+
+\begin{verbatim}
+V               =>  sorot baris
+:s/dan/dengan/  =>  ganti kata dan yang pertama saja
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+aku dengan kau bagaikan langit dan bumi
+\end{verbatim}
+
+Bandingkan jika kita menggunakan tanda \verb=g=.
+
+\begin{verbatim}
+V               =>  sorot baris
+:s/dan/dengan/g =>  ganti semua kata dan pada baris
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+aku dengan kau bagaikan langit dengan bumi
+\end{verbatim}
+
+Anda juga dapat menentukan apakah fungsi ini bersifat
+\emph{case sensitive} atau \emph{case insensitive}, secara
+\emph{default}, Vim menggunakan sifat \emph{case
+insensitive}, jika Anda ingin melakukan secara \emph{case
+sensitive}, Anda dapat menambahkan penanda \verb=I=.
+Perhatikan perintah berikut:
+
+\begin{verbatim}
+:%s/anda/kami/gI
+\end{verbatim}
+
+Perintah di atas hanya akan merubah kata \verb=anda=, tapi
+tidak dengan kata \verb=Anda=.
+
+Dengan menggunakan penanda \verb=c=, maka Anda akan
+dihadapkan pada konfirmasi interaktif, apakah Anda akan
+melakukan penggantian pada kata yang sudah ditemukan.
+
+\begin{verbatim}
+:%s/anda/kami/gcI
+\end{verbatim}
+
+Perintah di atas berarti, cari di seluruh dokumen, di
+seluruh baris, kata \verb=anda=, dan ganti menjadi
+\verb=kami=, dengan sebelumnya menanyakan konfirmasi pada
+Anda, dengan format kurang lebih seperti ini:
+
+\begin{verbatim}
+replace with kami (y/n/a/q/l/^E/^Y)?
+\end{verbatim}
+
+Selanjutnya Anda dapat menekan \verb=y= untuk \emph{yes},
+\verb=n= untuk \emph{no}, dan seterusnya...
+
+Berikut ini bentuk perintah untuk mencari kata secara tepat
+(\emph{exact match}) pada Vim. Mari kita gunakan contoh
+berikut:
+
+\begin{verbatim}
+andai
+seandainya
+andaikan
+\end{verbatim}
+
+Jika Anda menggunakan perintah
+
+\begin{verbatim}
+:%s/andai/jika/g
+\end{verbatim}
+
+Maka hasilnya:
+
+\begin{verbatim}
+jika
+sejikanya
+jikakan
+\end{verbatim}
+
+Dan bisa dibilang, hasilnya kacau. Kita dapat menggunakan
+pencarian dengan modus \emph{exact match} untuk mengatasi
+hal ini.
+
+Pencarian modus \emph{exact match} menggunakan bentuk
+sebagai berikut
+
+\begin{verbatim}
+:%s/\<kata_yang_dicari\>/kata_ganti/g
+\end{verbatim}
+
+Perhatikan kita menambahkan tanda \verb=\<= dan \verb=\>=
+pada awal dan akhir kata yang ingin kita cari. Sehingga
+perintah di atas kita ubah menjadi sebagai berikut:
+
+\begin{verbatim}
+:%s/\<andai\>/jika/g
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+jika
+seandainya
+andaikan
+\end{verbatim}
+
+Anda juga dapat melakukan fungsi cari dan ganti
+dikombinasikan dengan pencarian pola dengan 
+\verb=regular expression=, namun materi tersebut tidak akan
+dibahas dalam tutorial ini, jika berminat silakan
+di-\emph{explore} sendiri.
+
+\section{Macro}
+
+\subsection{Dasar Macro}
+Fitur ini adalah fitur yang sangat-sangat saya sukai, karena
+sesuai dengan prinsip DRY (\emph{Dont Repeat Yourself}.
+Ambil contoh teks html berikut ini:
+
+\begin{verbatim}
+<ul>
+    satu
+    dua
+    tiga
+    empat
+    lima
+    enam
+    tujuh
+    delapan
+    sembilan
+    sepuluh
+</ul>
+\end{verbatim}
+
+Semisal Anda ingin menambahkan \verb=tags <li>= dari satu
+sampai sepuluh, daripada bercapek menambahkan satu-persatu,
+Anda dapat membuat \verb=macro= kemudian menjalankan
+\verb=macro= tersebut sebanyak yang Anda inginkan.
+
+Tempatkan kursor pada kata \verb=satu=, kemudian jalankan
+kombinasi perintah berikut:
+
+\begin{verbatim}
+qa
+I
+<li>
+Esc
+A
+</li>
+Esc
+j
+q
+9@a
+\end{verbatim}
+
+Hasil:
+
+\begin{verbatim}
+<ul>
+    <li>satu</li>
+    <li>dua</li>
+    <li>tiga</li>
+    <li>empat</li>
+    <li>lima</li>
+    <li>enam</li>
+    <li>tujuh</li>
+    <li>delapan</li>
+    <li>sembilan</li>
+    <li>sepuluh</li>
+</ul>
+\end{verbatim}
+
+\subsection{Melakukan Penomoran Secara Otomatis}
+
+Ambil contoh berikut, saya ingin membuat 10 daftar kata
+python dengan nomor berurutan dari 1 sampai 10. Dengan
+bermodal satu baris berikut, saya dapat membuat 10 daftar
+kata python lengkap dengan nomor yang berurutan.
+
+\begin{verbatim}
+1. python
+\end{verbatim}
+
+Berikut perintahnya di Vim:
+
+\begin{verbatim}
+qa
+Y
+p
+Ctrl+A
+q
+8@a
+\end{verbatim}
+
+Dan hasilnya adalah sebagai berikut:
+
+\begin{verbatim}
+1. python
+2. python
+3. python
+4. python
+5. python
+6. python
+7. python
+8. python
+9. python
+10. python
+\end{verbatim}
+
+\emph{So so so efficient, right?}
+
+\section{Multi-tab}
+Seringkali Anda harus bekerja dengan banyak berkas
+sekaligus, di dunia \verb=IDE= Anda mungkin sudah tidak
+asing lagi dengan fitur \emph{multi-tab}, di mana Anda dapat
+membuka banyak berkas sekaligus dan berpindah antara satu
+berkas dengan berkas lain semudah melakukan klik pada berkas
+yang diinginkan.
+
+Vim juga mengenal sistem \emph{tabbing} seperti itu, berikut
+beberapa perintah ketika Anda bekerja dengan banyak
+\emph{tab}:
+
+\begin{verbatim}
+:tabnew         =>  membuat tab baru
+:tabnext        =>  berpindah ke tab berikutnya
+:tabprev        =>  berpindah ke tab sebelumnya
+:gt             =>  go to next tab
+:gT             =>  go to prev tab
+:tabfind        =>  mencari tab berdasar nama berkas
+:tabclose       =>  menutup tab
+\end{verbatim}
+
+Ketika Anda mengaktifkan fitur \emph{tab}, maka pada layar
+Vim bagian atas akan muncul \emph{tab} baru selayaknya
+\emph{tab} yang Anda lihat pada \verb=IDE= lainnya, cuman
+disini warnanya hitam dan putih :)
+
+Untuk lebih lengkapnya, Anda dapat mengetikkan perintah
+\verb=:tab= diikuti dengan tombol \verb=Tab= untuk melihat
+perintah-perintah apa saja terkait dengan fitur ini.
+
+\section{Registers}
+Untuk meningkatkan efisiensi dalam pekerjaan penyuntingan
+teks, Vim memiliki fitur \emph{registers}, di mana Anda
+dapat menyimpan apa yang sudah Anda salin atau hapus ke
+dalam sebuah \emph{key} tertentu.
+
+Ketika sudah tersimpan, Anda dapat menambahkan apa yang
+sudah Anda simpan atau menyalinnya ke tempat yang Anda
+inginkan. 
+
+Bentuk \emph{syntax} perintah \emph{registers} pada Vim
+adalah sebagai berikut:
+
+\begin{verbatim}
+"kyy
+\end{verbatim}
+
+Perintah di atas berarti salin sebuah baris (\verb=y=)
+kemudian simpan baris tersebut ke dalam tombol \verb=k=.
+Jika Anda ingin menampilkan isi dari \emph{register}
+tersebut, Anda dapat melakukan perintah berikut:
+
+\begin{verbatim}
+"kp
+\end{verbatim}
+
+Perintah tersebut berarti \emph{put} atau taruh isi dari
+\emph{register} \verb=k= pada posisi kursor sekarang.
+
+Anda dapat menambahkan isi sebuah \emph{register} dengan
+menggunakan huruf kapital dari \emph{register} yang Anda
+buat sebelumnya.
+
+\begin{verbatim}
+"Kyy
+\end{verbatim}
+
+Perintah di atas berarti salin baris pada posisi kursor,
+kemudian tambahkan (\emph{append}) baris tersebut ke dalam
+\emph{register} \verb=k=.
+
+Perhatikan contoh berikut:
+
+\begin{verbatim}
+Vim adalah program penyunting teks yang handal.
+\end{verbatim}
+
+Tekan \verb="kyy= untuk menyalin baris di atas.
+
+Kemudian Anda memiliki sebuah baris baru lagi
+
+\begin{verbatim}
+Namun, proses belajar Vim memang tidak mudah
+\end{verbatim}
+
+Berikutnya tekan \verb="Kyy= untuk menambahkan baris ini ke dalam
+\emph{register} \verb=k=.
+
+Kemudian \emph{put} isi dari \emph{register} \verb=k= ke
+dalam sebuah baris, dan hasilnya:
+
+\begin{verbatim}
+Vim adalah program penyunting teks yang handal.
+Namun, proses belajar Vim memang tidak mudah
+\end{verbatim}
+
+Selain menyimpan salinan, Anda dapat juga menyimpan hapusan
+ke dalam \emph{register}, caranya tentu dengan mengganti
+perintah salin dengan perintah hapus. Perhatikan contoh
+perintah berikut:
+
+\begin{verbatim}
+"kdd    =>  hapus dan simpan sebuah baris ke dalam register k
+"Kdd    =>  tambahkan hapusan berikutnya ke dalam register k
+"kp     =>  taruh isi dari register k ke posisi kursor sekarang
+\end{verbatim}
+
+\section{Marks}
+Sesuai dengan artinya, \emph{Marks} pada Vim berfungsi
+sebagai penanda posisi, sehingga Anda dapat dengan mudah
+menuju kembali ke posisi tersebut.
+
+\emph{Marks} pada Vim disimbolkan dengan huruf alfabet dari
+a--z untuk tiap berkas, dan huruf kapital A--Z untuk penanda
+global. Jika Anda sedang menyunting 10 berkas, tiap berkas
+dapat memiliki penanda posisi a, namun hanya memiliki 1 penanda
+posisi A.
+
+Perintah untuk mengaktifkan penanda pada posisi kursor
+adalah dengan menekan tombol \verb=m= diikuti dengan huruf
+sebagai penanda.
+
+Misal:
+
+\begin{verbatim}
+ma  =>  beri tanda pada posisi kursor sekarang dengan huruf a sebagai penanda
+\end{verbatim}
+
+Untuk kembali pada posisi tersebut, tekan tanda petik
+tunggal (\verb='=) atau tanda \emph{backtick} (\verb=`=).
+
+\begin{verbatim}
+'a  =>  menuju ke awal baris di mana penanda berada
+`a  =>  menuju tepat ke posisi kursor di mana penanda berada
+\end{verbatim}
+
+Selanjutnya Anda pun dapat menyalin, menghapus atau pun
+mengubah teks dengan penanda ini sebagai tujuan akhir.
+Misalnya:
+
+\begin{verbatim}
+Vim merupakan aplikasi penyunting teks yang hebat.
+\end{verbatim}
+
+Jalankan perintah berikut:
+
+\begin{verbatim}
+^       =>  menuju ke awal baris
+fp;;    =>  menuju ke huruf p pada kata penyunting
+ma      =>  beri tanda a pada posisi ini
+^       =>  kembali ke awal baris
+d`a     =>  hapus dari posisi kursor sampai penanda a
+\end{verbatim}
+
+Beberapa perintah lain dari fungsi \emph{marks} pada Vim:
+
+\begin{verbatim}
+:marks          =>  daftar semua penanda yang aktif
+:marks aB       =>  daftar penanda a, B
+:delmarks a     =>  hapus penanda a
+:delmarks a-d   =>  hapus penanda a,b,c,d
+:delmarks!      =>  hapus semua penanda huruf kecil
+\end{verbatim}
+
+Fungsi navigasi dengan penanda:
+
+\begin{verbatim}
+]'          =>  menuju ke baris penanda berikutnya
+['          =>  menuju ke baris penanda sebelumnya
+]`          =>  menuju ke posisi kursor penanda berikutnya
+[`          =>  menuju ke posisi kursor penanda sebelumnya 
+\end{verbatim}
+
+Yang perlu diingat, gunakan \verb='= (tanda petik tunggal)
+untuk menuju ke awal baris di mana penanda berada, atau
+gunakan \verb=`= (\emph{backticks}) untuk menuju ke posisi
+kursor di mana penanda berada.\footnote{tanda backtick
+berada di sebelah kiri angka 1 pada keyboard}
+
+\section{Buffer}
+Satu lagi fitur yang handal dari Vim untuk bekerja dengan
+banyak berkas adalah \emph{buffer}. Saya sendiri lebih
+menyukai ini dibandingkan dengan sistem \emph{tabbing},
+karena layar kita tetap bersih, seolah-olah bekerja dengan
+satu berkas, padahal sebenarnya banyak berkas yang sedang
+kita sunting.
+
+Berikut beberapa perintah terkait dengan \emph{buffer}:
+
+\begin{verbatim}
+:badd               =>   menambahkan berkas / buffer baru
+:ls                 =>   melihat berkas-berkas yang sedang kita sunting
+:bd                 =>   menghapus buffer (bukan menghapus berkas)
+:b <angka>          =>   berpindah ke buffer <angka> sesuai dengan urutan pada perintah ls
+:b <nama berkas>    =>   berpindah ke buffer berdasar nama
+:bn                 =>   berpindah ke next buffer
+:bp                 =>   berpindah ke prev buffer
+\end{verbatim}
+
+Berikut ini contoh perintah \verb=:ls=:
+
+\begin{verbatim}
+:ls
+1 %a + "vim_docs.tex"                 line 593
+2 #h   "~/.vimrc"                     line 1
+3  h   "[No Name]"                    line 0
+\end{verbatim}
+
+Begini cara baca keluaran dari perintah \verb=:ls= di atas:
+
+\begin{verbatim}
+%           =>  buffer aktif yang sedang dilihat
+#           =>  alternate buffer, tekan Ctrl+^ untuk berpindah ke alternate buffer
+h           =>  hidden buffer (tidak sedang dilihat)
++           =>  ada perubahan dan belum disimpan
+-           =>  inactive buffer
+line xxx    =>  menunjukkan di baris berapa kursor Anda berada
+\end{verbatim}
+
+Terlihat di sana saya sedang menyunting 3 berkas, di mana
+berkas yang aktif saya sunting saat ini adalah berkas nomor
+1 (ditandai dengan \verb=%=).
+
+Kalau saya ingin pindah ke berkas \verb=.vimrc=, saya
+tinggal perintahkan \verb=:b 2= atau \verb=:b vimrc= atau
+\verb=:bn=.
+
+Selain menghapus satu per satu, Anda juga dapat menghapus
+banyak \emph{buffer} sekaligus dengan menggunakan
+\emph{range}, contoh:
+
+\begin{verbatim}
+:1,5bd      =>  menghapus buffer 1 sampai 5
+\end{verbatim}
+
+Jika Anda ingin menghapus sebuah \emph{buffer} tanpa
+melakukan penyimpanan, Anda dapat menambahkan tanda perintah
+\verb=!= seperti pada contoh berikut:
+
+\begin{verbatim}
+:bd!
+\end{verbatim}
+
+Anda dapat juga melakukan pencarian ke dalam banyak
+\emph{buffer} sekaligus, atau mungkin cari dan ganti ke
+banyak \emph{buffer} sekaligus. Selanjutnya, silakan
+di-\emph{explore} sendiri kemampuan dari \emph{buffer} ini.
+
+\section{Code Folding}
+Bagi Anda yang menulis ribuan baris teks atau pun kode,
+fitur ini pasti sangat berguna buat Anda untuk membuat
+tulisan atau kode Anda ``lebih enak`` dilihat.
+
+Berikut ini tampilan kode sebelum dan sesudah menggunakan
+\emph{folding} di Vim:
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim12.png}
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim13.png}
+
+\vspace{12pt}
+
+Vim memiliki 6 cara dalam melakukan \emph{folding}:
+
+\begin{verbatim}
+1. manual
+2. indent
+3. syntax
+4. marker
+5. expr
+6. diff
+\end{verbatim}
+
+Untuk sementara ini mari kita pelajari 3 dari 6 cara di
+atas, yakni cara \verb=manual=, \verb=marker= dan
+\verb=indent=.
+
+\emph{Folding} \verb=manual= dapat Anda lakukan dengan
+terlebih dahulu menyorot baris yang ingin Anda lipat,
+kemudian lipat (buka lipatan) dengan menekan:
+
+\begin{verbatim}
+zf  =>  melipat baris
+za  =>  membuka lipatan
+\end{verbatim}
+
+Contoh:
+
+\begin{verbatim}
+Jadual hari ini:
+1. Rapiin kamar kerja
+2. Cuci motor
+3. Mandi
+4. Sarapan
+5. Coding
+6. Makan siang
+7. Ngopi2 sama temen
+\end{verbatim}
+
+Posisikan kursor pada jadual pertama, kemudian tekan:
+
+\begin{verbatim}
+V   =>  sorot baris pertama
+6j  =>  sorot 6 baris dibawahnya
+zf  =>  lipat baris
+\end{verbatim}
+
+Atau cara lebih singkat:
+
+\begin{verbatim}
+zf6j
+\end{verbatim}
+
+Selain dengan teknik sorot, Anda pun dapat menggunakan
+teknik \verb=marks= yang dapat Anda pelajari di bagian lain
+tutorial ini.
+
+Menggunakan contoh di atas, kita dapat memanfaatkan fitur
+\verb=marks= untuk melakukan pelipatan:
+
+Posisikan kursor pada jadual nomer 7, kemudian tekan:
+
+\begin{verbatim}
+ma      =>  beri tanda dan simpan ke register a
+6k      =>  menuju ke jadual nomer 1
+zf'a    =>  lipat baris sampai mark a
+\end{verbatim}
+
+Berikutnya pelipatan dengan metode \verb=marker=, sebelumnya
+ketik perintah berikut ini:
+
+\begin{verbatim}
+:set foldmethod=marker
+\end{verbatim}
+
+Selanjutnya Anda dapat memberikan tanda khusus pada
+bagian-bagian yang ingin Anda lipat. Perhatikan kode
+\verb=LaTeX= berikut:
+
+\begin{verbatim}
+\section{Pendahuluan}
+%{{{
+Tulisan-tulisan ini sebenarnya bukanlah tutorial lengkap
+yang mengajarkan kepada Anda seluk-beluk program Vim,
+melainkan sekedar catatan pribadi penulis yang coba
+dituangkan kedalam sebuah berkas elektronik dengan tujuan
+untuk dokumentasi pribadi, syukur-syukur kalau ada pihak
+lain yang membacanya dan mampu mendapatkan manfaat dari
+tulisan-tulisan ini.
+%}}}
+\end{verbatim}
+
+Kemudian tambahkan penanda (sebagai contoh 
+\verb=%{{{ %}}}=):
+
+\begin{verbatim}
+\section{Pendahuluan}
+%{{{
+Tulisan-tulisan ini sebenarnya bukanlah tutorial lengkap
+yang mengajarkan kepada Anda seluk-beluk program Vim,
+melainkan sekedar catatan pribadi penulis yang coba
+dituangkan kedalam sebuah berkas elektronik dengan tujuan
+untuk dokumentasi pribadi, syukur-syukur kalau ada pihak
+lain yang membacanya dan mampu mendapatkan manfaat dari
+tulisan-tulisan ini.
+%}}}
+\end{verbatim}
+
+Secara otomatis, Vim akan melihat tanda tersebut, letakkan
+kursor di dalam penanda tersebut, kemudian tekan:
+
+\begin{verbatim}
+za  =>  melipat kode
+za  =>  lakukan lagi untuk membuka lipatan
+\end{verbatim}
+
+Atau Anda pun dapat melipat semua bagian yang sudah Anda
+beri penanda dengan mengetikkan:
+
+\begin{verbatim}
+zM      =>  melipat semua bagian yang sudah diberi marker
+\end{verbatim}
+
+dan untuk membukanya:
+
+\begin{verbatim}
+zR      =>  membuka semua lipatan yang sudah diberi marker
+\end{verbatim}
+
+Anda dapat menentukan sendiri \verb=marker= yang akan
+dipakai, dengan memberikan perintah:
+
+\begin{verbatim}
+:set foldmarker=/*,*/
+\end{verbatim}
+
+Perintah di atas, berarti \verb=marker= pembuka ditandai
+dengan tanda \verb=/*= dan \verb=marker= penutup dengan
+tanda \verb=*/=.
+
+Metode berikutnya adalah dengan metode \verb=indent=. Teknik
+ini berguna ketika Anda memiliki kode yang memiliki
+indentasi terstruktur (misal bahasa \verb=Python=).
+
+Sebelumnya ketik perintah berikut:
+
+\begin{verbatim}
+:set foldmethod=indent
+\end{verbatim}
+
+Perhatikan kode \verb=Python= berikut:
+
+\begin{verbatim}
+class C(object):
+
+    nama = 'sopier'
+    hobi = 'plesir'
+
+    def __init__(self):
+        pass
+\end{verbatim}
+
+Anda dapat melipat kode, dengan menempatkan kursor pada kode
+tersebut, kemudian tekan
+
+\begin{verbatim}
+za  =>  melipat kode
+za  =>  lakukan lagi untuk membuka lipatan
+\end{verbatim}
+
+Atau Anda dapat melipat semua baris yang memiliki indentasi
+dengan menekan:
+
+\begin{verbatim}
+zM  =>  melipat semua baris yang memiliki indent
+zR  =>  membuka semua lipatan
+\end{verbatim}
+
+Anda dapat mempelajari lebih dalam lagi dengan menekan
+perintah 
+
+\begin{verbatim}
+:help folding
+\end{verbatim}
+
+\section{File Explorer}
+Salah satu fungsi penting sebuah program penyunting teks
+adalah kemampuan jelajah berkas, jika Anda terbiasa dengan
+program berbasis \emph{GUI}, Anda tinggal cari menu
+\emph{Open} dan mulai mencari berkas yang Anda inginkan.
+Bagaimana dengan Vim?
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim8.png}
+
+\vspace{12pt}
+
+Secara \emph{default}, Vim memiliki kemampuan tersebut,
+berikut ini kombinasi tombol perintah yang Anda perlukan
+untuk mengakses kemampuan jejalah berkas pada Vim:
+
+\begin{verbatim}
+:edit .     =>  membuka file explorer
+:e.         =>  membuka file explorer
+:sp.        =>  membuka file explorer dengan horizontal split
+:vs.        =>  membuka file explorer dengan vertical split
+\end{verbatim}
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim10.png}
+
+\vspace{12pt}
+
+Ketika Anda berada pada fitur jelajah berkas, Anda dapat
+menggunakan kombinasi tombol berikut untuk membuat berkas
+baru, direktori baru, mengganti nama, dan menghapus berkas:
+
+\begin{verbatim}
+%   =>  membuat berkas baru
+d   =>  membuat direktori baru
+R   =>  mengubah nama berkas / direktori pada kursor
+D   =>  menghapus berkas / direktori pada kursor
+\end{verbatim}
+
+Karena fitur \emph{file explorer} tidak lain adalah
+\emph{buffer}, maka Anda dapat dengan mudah menutupnya
+dengan perintah \verb=:bd= atau melakukan pencarian
+menggunakan \verb=/= (\emph{forward}), atau \verb=?=
+(\emph{backward}). Dan tentunya juga tombol \verb=hjkl=
+untuk melakukan navigasi ke kiri, bawah, atas dan kanan.
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim9.png}
+
+\vspace{12pt}
+
+\section{Split Screen}
+Dalam bekerja dengan banyak berkas, Vim juga memiliki
+kemampuan untuk memecah layar menjadi beberapa bagian, baik
+itu horisontal maupun vertikal.
+
+Perhatikan gambar berikut:
+
+\vspace{12pt}
+
+\includegraphics[scale=0.6]{vim6.jpg}
+
+\vspace{12pt}
+
+Terlihat saya sedang menyunting 3 berkas dan ketiga-tiganya
+terbuka, fitur ini sangat membantu ketika kita bekerja
+dengan banyak berkas sekaligus. Bagaimana caranya:
+
+\begin{verbatim}
+:sp         =>  split horisontal
+:vsp        =>  split vertical
+Ctrl+w+w    =>  berpindah antar window
+Ctrl+w+r    =>  berpindah antar window clockwise
+Ctrl+w+R    =>  berpindah antar window counter-clockwise
+Ctrl+w+l    =>  berpindah ke window sebelah kanan
+Ctrl+w+h    =>  berpindah ke window sebelah kiri 
+Ctrl+w+j    =>  berpindah ke window sebelah bawah 
+Ctrl+w+k    =>  berpindah ke window sebelah atas 
+Ctrl+w+-    =>  memperkecil ukuran window (mode horizontal)
+Ctrl+w++    =>  memperbesar ukuran window (mode horizontal)
+:q          =>  menutup window
+\end{verbatim}
+
+Anda dapat juga menggunakan perintah \verb=:sp= atau
+\verb=:vsp= diikuti dengan nama berkas yang ingin Anda
+sunting dalam \emph{window} baru.
+
+\section{Session}
+Fungsi fitur ini adalah untuk menyimpan berkas-berkas yang
+Anda kerjakan sebelumnya, daripada membuka ulang
+satu-persatu berkas tersebut, Anda tinggal menyimpannya ke
+dalam \emph{session} untuk kemudian dibuka kembali, dan
+otomatis Vim akan membuka berkas-berkas tersebut dalam
+\emph{buffer}-nya. 
+
+Berikut cara kita mengelola \emph{session} dalam Vim:
+
+\begin{verbatim}
+Menyimpan session
+:mksession work1.vim
+
+Memanggil session dari dalam Vim
+:source work1.vim
+
+Memanggil session dari terminal
+$ vim -S work1.vim
+\end{verbatim}
+
+
+\section{Konfigurasi Vim}
+Anda dapat mengatur program Vim dengan membuat berkas
+\verb=.vimrc= pada direktori \verb=home= Anda.
+
+\begin{verbatim}
+$ vim ~/.vimrc
+\end{verbatim}
+
+Pengaturan ini sendiri mungkin berbeda antara pengguna satu
+dengan pengguna lainnya, tergantung selera dan kebiasaan,
+berikut konfigurasi yang saya pakai:
+
+\begin{verbatim}
+set nocompatible
+
+filetype on
+filetype plugin on
+filetype indent on
+syntax on
+
+set autowrite
+set ruler
+set hidden
+set autochdir
+
+colorscheme delek 
+
+set tabstop=8
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+set showcmd
+set number
+set smartindent
+set autoindent
+set laststatus=2
+set linespace=3
+
+set wrap
+set linebreak
+set nolist
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+set foldenable
+set mousehide
+"set splitbelow
+
+nmap <space> :
+
+set wildmode=list:longest
+
+imap jj <esc>
+
+map <f2> :w\|!python %
+\end{verbatim}
+
+Konfigurasi ini secara garis besar adalah standar, kecuali
+saya merubah tombol \verb=:= menjadi \verb=Space=, dan
+tombol \verb=Esc= menjadi \verb=jj=, semua ini dilakukan
+biar posisi tangan tidak bergeser ke kanan dan ke kiri.
+
+Silakan dicoba, atau Anda mungkin memiliki preferensi
+sendiri, Vim memberikan kebebasan untuk itu..
+
+\section{Lain-lain}
+Berikut ini kumpulan tips dan trik yang sering saya pakai
+dan siapa tahu bermanfaat juga buat Anda...
+
+\subsection{Menjalankan Perintah Shell dari Vim}
+Ini termasuk salah satu fitur yang sangat saya sukai, Anda
+tidak perlu bolak-balik keluar dari Vim untuk sekedar
+menjalankan perintah \verb=Shell=.
+
+Sebagai contoh, dokumen ini ditulis menggunakan
+\verb=LaTeX=, dan tentunya saya sering melakukan
+\verb=compiling= dari format \verb=.tex= ke \verb=.pdf=
+untuk melihat apakah ada kesalahan penulisan atau tidak.
+Proses \verb=compiling= itu sendiri menggunakan \verb=shell=
+\emph{command}:
+
+\begin{verbatim}
+$ pdflatex vimdocs.tex
+\end{verbatim}
+
+Daripada harus keluar masuk Vim, saya dapat mengeksekusi
+perintah tersebut dari dalam Vim menggunakan perintah
+berikut:
+
+\begin{verbatim}
+:!pdflatex vimdocs.tex
+\end{verbatim}
+
+Dan jika ingin mengulangi perintah terakhir, asya dapat
+dengan mudah mengetik berikut di Vim:
+
+\begin{verbatim}
+:!!
+\end{verbatim}
+
+Sangat efisien bukan?
+
+\subsection{Menyisipkan Keluaran dari Shell Command ke dalam
+Vim}
+
+Semisal Anda ingin menyisipkan tanggal dan jam saat ini ke
+dalam dokumen Vim yang sedang Anda tulis, daripada harus
+capek-capek mengetik ulang, kita dapat menggunakan fungsi
+\verb=read= berikut:
+
+\begin{verbatim}
+:r !date
+\end{verbatim}
+
+Atau ingin menyisipkan kalender menggunakan perintah
+\verb=shell cal=?
+
+\begin{verbatim}
+:r !cal
+\end{verbatim}
+
+Maka, secara otomatis keluaran dari perintah \verb=date=
+akan disisipkan pada baris di mana kursor Anda berada.
+
+\begin{verbatim}
+   December 2012      
+Su Mo Tu We Th Fr Sa  
+                   1  
+ 2  3  4  5  6  7  8  
+ 9 10 11 12 13 14 15  
+16 17 18 19 20 21 22  
+23 24 25 26 27 28 29  
+30 31                 
+\end{verbatim}
+
+\subsection{Singkatan}
+Anda memiliki kata yang sangat sering Anda ulang-ulang dan
+ingin membuat versi singkatannya supaya lebih efisien dalam
+proses pengetikan? Vim memiliki fitur tersebut dengan
+perintah berikut:
+
+\begin{verbatim}
+:ab yg yang
+\end{verbatim}
+
+Maka, secara otomatis setiap kali Anda mengetik \verb=yg=
+diikuti dengan \verb=spasi= atau \verb=,=, maka kata
+tersebut berubah menjadi \verb=yang=.
+
+Secara lengkap, berikut perintah-perintah terkait dengan
+fitur \emph{abbreviations} ini.
+
+\begin{verbatim}
+:ab dg dengan   =>  dg diganti dengan
+:ab             =>  daftar semua singkatan
+:una dg         =>  hapus dg dari daftar singkatan
+:abc            =>  hapus semua daftar singkatan
+\end{verbatim}
+
+\subsection{Membatasi Panjang Baris Maksimum n Karakter}
+Baris yang terlalu panjang kadang merepotkan, karena kita
+harus melakukan \emph{scrolling} ke kanan untuk dapat
+membaca baris bagian kanan ujung. Untuk mengatasi hal
+tersebut, saya sendiri lebih suka mengatur Vim dengan
+panjang maksimum adalah 80 karakter:
+
+\begin{verbatim}
+:set textwidth=80
+\end{verbatim}
+
+Konfigurasi ini otomatis memerintahkan Vim untuk memotong
+baris setiap kali kursor berada pada posisi ke-80.
+
+Biar tidak berulang-ulang mengetikkan perintah tersebut,
+kita dapat memasukkan konfigurasi tersebut kedalam berkas
+\verb=.vimrc=:
+
+\begin{verbatim}
+set textwidth=80
+\end{verbatim}
+
+Selain cara otomatis tersebut, kita juga bisa memotong
+secara \emph{manual} dengan mengetikkan perintah:
+
+\begin{verbatim}
+gql
+\end{verbatim}
+
+\subsection{Menggabung Dua atau Lebih Baris}
+Lawan dari memotong baris yang panjang, adakalanya kita
+ingin menggabungkan beberapa baris menjadi 1 baris saja.
+Hal ini dapat kita lakukan dengan menempatkan kursor di
+baris paling atas dari beberapa baris yang ingin Anda
+gabung, kemudian ketikkan:
+
+\begin{verbatim}
+J       =>  jika hanya dua baris
+JJ      =>  3 baris
+JJJ     =>  4 baris
+\end{verbatim}
+
+Ulangi menekan \verb=J= sampai semua baris tergabung menjadi
+satu. Perintah ini secara otomatis akan menambahkan spasi
+diantara baris yang digabungkan. Jika Anda ingin menggabung
+baris tanpa spasi, gunakan perintah \verb=gJ=.
+
+Contoh:
+
+\begin{verbatim}
+Ini baris pertama
+Ini baris kedua
+Ini baris ketiga
+Ini baris keempat
+\end{verbatim}
+
+Tekan perintah berikut:
+
+\begin{verbatim}
+^       =>  menuju ke awal baris
+J       =>  gabung garis 1 dan 2
+J       =>  gabung lagi
+gJ      =>  gabung lagi, kali ini tanpa spasi
+\end{verbatim}
+
+Sehingga hasilnya sebagai berikut:
+
+\begin{verbatim}
+Ini baris pertama Ini baris kedua Ini baris ketigaIni baris keempat
+\end{verbatim}
+
+\subsection{Lowercase, Uppercase dan Titlecase}
+Bagaimana cara mengubah dari \emph{lowercase} menjadi
+\emph{uppercase} dalam Vim?
+
+Perhatikan contoh kalimat berikut:
+
+\begin{verbatim}
+vim merupakan program penyunting teks yang hebat.
+\end{verbatim}
+
+Anda dapat merubah kalimat di atas menjadi \emph{uppercase}
+dengan menekan tombol berikut:
+
+\begin{verbatim}
+V       =>   sorot baris
+U       =>   ubah menjadi uppercase, atau
+u       =>   ubah menjadi lowercase
+\end{verbatim}
+
+Berikut hasil ketika sudah dirubah menjadi \emph{uppercase}
+
+\begin{verbatim}
+VIM MERUPAKAN PROGRAM PENYUNTING TEKS YANG HEBAT.
+\end{verbatim}
+
+Untuk mengubah kata atau baris menjadi \emph{titlecase},
+kita dapat menggunakan fitur \emph{search n replace}
+digabungkan dengan \emph{regular expression}:
+
+\begin{verbatim}
+V               =>  sorot baris
+:s/\w*/\u&/g    =>  ubah setiap awal kata menjadi huruf kapital
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Vim Merupakan Program Penyunting Teks Yang Hebat.
+\end{verbatim}
+
+Anda juga dapat melakukannya dengan cara \emph{semi-manual},
+berikut caranya:
+
+\begin{verbatim}
+^   =>   menuju ke awal baris
+vU  =>   sorot huruf pada awal kata dan ubah menjadi uppercase
+w.  =>   menuju ke awal kata berikutnya dan ulangi langkah sebelumnya
+w.  =>   menuju ke awal kata berikutnya dan ulangi langkah sebelumnya
+ulangi lagi sebanyak yang Anda inginkan
+\end{verbatim}
+
+Atau Anda juga dapat memanfaatkan \emph{plugin} bernama
+\verb=titlecase= yang dapat Anda unduh di http://www.vim.org
+
+Selamat mencoba ...
+
+\subsection{Cari dan Hapus Baris Berdasar Pola}
+Saatnya kita mencoba mempelajari fitur
+\emph{regular expression} pada Vim. Pada bahasan kali ini
+kita akan mencari dan menghapus baris jika dalam tersebut
+terdapat pola (\emph{pattern}) yang cocok dengan yang kita
+tentukan.
+
+Perhatikan contoh berikut ini:
+
+\begin{verbatim}
+this is a line
+these are also lines
+those are line
+that is another line
+\end{verbatim}
+
+Kita dapat menghapus baris yang memiliki kata \verb=lines=
+dengan mengetikkan perintah berikut:
+
+\begin{verbatim}
+:g/lines/d
+\end{verbatim}
+
+atau menghapus kata yang mengandung \verb=is=
+
+\begin{verbatim}
+:g/is/d
+\end{verbatim}
+
+atau kata yang diawali dengan \verb=th=
+
+\begin{verbatim}
+:g/^th/d
+\end{verbatim}
+
+atau kata yang diakhiri dengan \verb=ine=
+
+\begin{verbatim}
+:g/ine$/d
+\end{verbatim}
+
+Anda dapat juga menentukan pada baris berapa sampai berapa
+fungsi ini diterapkan, contoh berikut akan menghapus baris
+yang memiliki kata \verb=lines= pada baris 1296 sampai 1299:
+
+\begin{verbatim}
+:1296,1299g/lines/d
+\end{verbatim}
+
+\subsection{Membuat Baris Baru Identik}
+Berikut ini adalah perintah untuk membuat banyak baris yang
+identik:
+
+\begin{verbatim}
+5aVim is great!     =>  buat 5 baris baru dengan isi Vim is great!
+Tekan enter         =>  buat baris baru
+Tekan Esc           =>  kembali ke command mode
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+Vim is great!
+Vim is great!
+Vim is great!
+Vim is great!
+Vim is great!
+\end{verbatim}
+
+\subsection{Cara Lain Beralih ke Command Mode}
+Di bagian atas sudah disebutkan bahwa untuk beralih dari
+\emph{insert mode} ke \emph{command mode}, kita dapat
+menekan tombol \verb=Esc= pada \emph{keyboard}.
+Kenyataannya, bagi sebagian orang (termasuk saya), tombol
+\verb=Esc= terlalu jauh letaknya dari \emph{home row}.
+
+Untuk itu sebagian pengguna Vim ada yang melakukan
+\emph{remapping} tombol \verb=Esc= ke tombol lain, misalnya
+saya \emph{remap} tombol \verb=Esc= ke tombol \verb=jj=.
+Caranya adalah dengan menambahkan baris berikut pada berkas
+\verb=.vimrc= Anda:
+
+\begin{verbatim}
+imap jj <esc>
+\end{verbatim}
+
+Selain itu, sebenarnya Anda dapat juga menggunakan tombol
+\verb=Ctrl+[= atau \verb=Ctrl+c= untuk berpindah dari
+    \emph{insert mode} ke \emph{command mode}.
+
+Silakan pilih yang Anda suka, selama itu untuk meningkatkan
+produktivitas Anda dalam pekerjaan penyuntingan teks.
+
+\subsection{Bracket Matching}
+Tanda kurung biasanya selalu ditulis dalam bentuk
+berpasangan, ada \verb=(= maka ada \verb=)=, begitu juga
+dengan tanda \verb={}= dan \verb=[]=.
+
+Kalau Anda menulis kode program, biasanya pasangan dari
+tanda tersebut berada jauh di bawah atau kanan, Vim dalam
+hal ini memberikan kemudahan untuk mencari pasangan dari
+tanda-tanda tersebut. Dengan menekan tanda \verb=%=, maka
+secara otomatis kursor akan bergerak ke pasangan tanda
+tersebut.
+
+Lihat kode berikut:
+
+\begin{verbatim}
+require('casper').create({
+    loadImages: false,
+    verbose: true,
+    logLevel: debug
+});
+\end{verbatim}
+
+Posisikan kursor Anda pada kurung buka "\verb=(=" setelah kata
+\verb=create=, kemudian tekan \verb=%=, apa yang terjadi?
+Vim akan mencocokkan di mana letak kurung tutup yang
+merupakan pasangan dari kurung buka tadi, tekan \verb=%=
+sekali lagi, dan Anda berpindah ke tempat kursor Anda
+sebelumnya.
+
+Apa jadinya jika tidak ada pasangan kurung yang tepat? Vim
+tidak akan memberitahukan pesan kesalahan apa-apa, namun
+karena posisi kursor tidak berpindah, maka dapat disimpulkan
+bahwa kurung tersebut belum ditutup.
+
+\begin{verbatim}
+require('casper').create({
+    loadImages: false,
+    verbose: true,
+    logLevel: debug
+};
+\end{verbatim}
+
+\subsection{Mengaktifkan Penomoran Baris}
+Secara \emph{default}, Vim tidak menampilkan penomoran
+baris, namun Anda dapat dengan mudah menampilkannya dengan
+mengetikkan:
+
+\begin{verbatim}
+:set number     =>  nomor baris aktif
+:set nonumber   =>  nomor baris tidak aktif 
+\end{verbatim}
+
+\subsection{Mengulang Perintah Terakhir}
+
+Tahukah Anda kalau Anda dapat mengulang perintah Anda yang
+terakhir kali menggunakan tanda titik (\emph{dot})?
+
+Misal Anda memiliki teks sebagai berikut:
+
+\begin{verbatim}
+tahukah anda? vim sudah berumur 20 tahun lebih?
+\end{verbatim}
+
+Anda ingin mengganti kalimat tersebut menjadi
+\emph{titlecase}, bagaimana caranya?
+
+\begin{verbatim}
+^   =>  menuju ke awal baris yang berisi huruf
+v   =>  sorot huruf pertama pada kata pertama
+U   =>  ubah menjadi huruf kapital
+w   =>  bergerak ke kata berikutnya
+.   =>  ulangi perintah vU
+\end{verbatim}
+
+Dan hasilnya...
+
+\begin{verbatim}
+Tahukah Anda? Vim Sudah Berumur 20 Tahun Lebih?
+\end{verbatim}
+
+Anda dapat juga mengulang perintah terakhir yang Anda
+berikan ke Vim dengan mengetikkan:
+
+\begin{verbatim}
+@:
+\end{verbatim}
+
+Sebagai contoh, Anda ingin membuka \emph{tab} baru pada Vim
+dengan menggunakan perintah \verb=:tabnew=. Sebentar
+kemudian Anda butuh untuk membuka \emph{tab} baru satu lagi,
+daripada harus mengetik \verb=:tabnew= lagi, Anda dapat
+mengulang perintah tersebut dengan cara \verb=@:=, dan
+perintah yang paling terakhir pun, dijalankan ulang oleh
+Vim.
+
+\begin{verbatim}
+:tabnew     =>  membuka tab baru
+@:          =>  buka tab baru lagi
+:tabclose   =>  tutup tab 
+@:          =>  ulangi perintah tutup tab
+\end{verbatim}
+
+\subsection{Eksekusi Kode Bash dalam Vim}
+
+Selain dapat menjalankan kode Python, Vim juga dapat
+menjalankan perintah Bash, sebagai contoh Anda memiliki
+baris kode seperti berikut ini:
+
+\begin{verbatim}
+echo "hai from Bash"
+date
+echo "bye..."
+\end{verbatim}
+
+Kemudian jalankan perintah berikut:
+
+\begin{verbatim}
+V2j     =>  sorot baris pada kursor dan 2 baris dibawahnya
+:!bash  =>  eksekusi kode
+\end{verbatim}
+
+dan hasilnya:
+
+\begin{verbatim}
+hai from Bash
+Fri Dec 21 06:30:10 WIT 2012
+bye...
+\end{verbatim}
+
+\subsection{Mengetahui Nama Berkas yang sedang disunting}
+Daripada harus mengetik ulang nama berkas, Vim memberikan
+kemudahan dengan menggunakan \verb=register %=, yang mana
+fungsinya adalah sebagai \emph{shortcut} untuk berkas yang
+sedang disunting.
+
+Jika Anda ingin menampilkan nama berkas yang sedang
+disunting, pada \emph{insert mode}, ketik:
+
+\begin{verbatim}
+Ctrl+r
+%
+\end{verbatim}
+
+Atau, pada \emph{command mode}:
+
+\begin{verbatim}
+"%p
+\end{verbatim}
+
+dan hasilnya:
+
+\begin{verbatim}
+vim_docs.tex
+\end{verbatim}
+
+Dan jika Anda ingin menampilkan nama berkas secara utuh
+dengan \emph{path}-nya, pada \emph{command mode}, ketik
+perintah berikut:
+
+\begin{verbatim}
+:put =expand('%:p')
+\end{verbatim}
+
+Dan hasilnya:
+
+\begin{verbatim}
+/home/banteng/Dropbox/dokumentasi/vim/vim_docs.tex
+\end{verbatim}
+
+\subsection{Resize Splits}
+Sebagaimana layaknya sebuah \emph{window} pada aplikasi
+\emph{GUI} yang dapat diubah ukurannya dengan melakukan
+\emph{click-and-drag}, Vim juga memiliki fitur tersebut
+ketika kita bekerja dengan \emph{split screen}.
+
+Perintah untuk mengubah ukuran layar horisontal berbeda
+dengan perintah untuk layar vertikal. Berikut ini perintah
+untuk mengubah ukuran layar pada mode \emph{split} di Vim:
+
+Mode \emph{horizontal split}
+\begin{verbatim}
+Ctrl+w +    =>  Increase
+Ctrl+w -    =>  Decrease
+Ctrl+w _    =>  Maximize
+Ctrl+w =    =>  Equal size
+10Ctrl+w +  =>  Increase 10 lines
+10Ctrl+w -  =>  Decrease 10 lines
+\end{verbatim}
+
+Mode \emph{vertical split}
+\begin{verbatim}
+Ctrl+w >    =>  Increase
+Ctrl+w <    =>  Decrease
+Ctrl+w |    =>  Maximize
+Ctrl+w =    =>  Equal size
+10Ctrl+w >  =>  Increase 10 chars
+10Ctrl+w <  =>  Decrease 10 chars
+\end{verbatim}
+
+\end{document}
