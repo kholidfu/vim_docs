@@ -1,0 +1,3 @@
+Yang menjadikan momok bagi sebagian orang mungkin adalah kenyataan bahwa di Vim kita dituntut untuk sesedikit mungkin menggunakan mouse.
+
+mouse

@@ -1,0 +1,15 @@
+Beberapa bahasa pemrograman yang populer:
+
+Programming Language:
+	1. Python
+	2. PHP
+	3. Ruby
+	4. C++
+	5. Javascript
+	6. Go
+
+Daftar universitas negeri di Indonesia:
+	1. UGM
+	2. UI
+	3. ITB
+	4. ITS
